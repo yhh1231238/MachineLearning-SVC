@@ -15,6 +15,7 @@ print(train.isnull().any())
 
 #显示数据类型
 print(train.info())
+# print(train.describe())
 
 # 目标变量正负样本的分布即0与1的比例
 p = train['CLASS'].value_counts()
@@ -56,7 +57,7 @@ pca=decomposition.PCA(n_components=100)
 newData=train_feature
 newTest=test_feature
 
-### 皮尔逊相关系数
+## 皮尔逊相关系数
 nu_fea = newData.astype(int) # 选择数值类特征计算相关系数
 nu_feb= pd.DataFrame(nu_fea)
 nu_fec = nu_feb.sample(n=10, frac=None, replace=False, weights=None, random_state=None, axis=1)
@@ -104,7 +105,7 @@ from sklearn.ensemble import RandomForestClassifier as RF    # 随机森林
 from sklearn import tree #决策树
 
 #将数据处理成可以放入kFold_cv函数中
-X=train.iloc[:,0:100]
+X=train.iloc[:,0:240]
 X=X.values
 y=train_lable
 y=y.values
@@ -166,7 +167,7 @@ from sklearn.metrics import accuracy_score
 
 # #部分参数调优
 # #惩罚因子C参数调优
-# #经过计算得到最好是5
+# #经过计算得到最好是11
 C_Value=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 Acccuracy=[]
 for i in range(20):
@@ -193,7 +194,7 @@ kernel_Value=['rbf','linear','poly','sigmoid']
 Acccuracy=[]
 for i in kernel_Value:
     for train_index, test_index in kf.split(X):
-        clf = SVC(C=5,kernel=i)
+        clf = SVC(C=11,kernel=i)
         X_train = X[train_index]
         X_test = X[test_index]
         y_train = y[train_index]    # 划分数据集
@@ -211,12 +212,12 @@ plt.show()
 
 # # 部分参数调优
 # # gamma参数调优
-# # 经过计算得到最好是0.03171
+# # 经过计算得到最好是0.0170
 gamma_Value=np.linspace(0, 0.1, 40)
 Acccuracy=[]
 for i in gamma_Value:
     for train_index, test_index in kf.split(X):
-        clf = SVC(C=5,kernel='rbf',gamma=i+0.001)
+        clf = SVC(C=11,kernel='rbf',gamma=i+0.001)
         X_train = X[train_index]
         X_test = X[test_index]
         y_train = y[train_index]    # 划分数据集
@@ -240,15 +241,15 @@ plt.show()
 # #经过下面的十折交叉验证代码发现True和FALSE预测结果相同
 
 
-
-#部分参数调优
-#max_iter参数调优
-#经过计算得到最好是-1
+#
+# #部分参数调优
+# #max_iter参数调优
+# #经过计算得到最好是-1
 max_iter_value=[-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20]
 Acccuracy=[]
 for i in range(22):
     for train_index, test_index in kf.split(X):
-        clf =SVC(C=5,kernel='rbf',gamma=0.03171,max_iter=i-1)
+        clf =SVC(C=5,kernel='rbf',gamma=0.0170,max_iter=i-1)
         X_train = X[train_index]
         X_test = X[test_index]
         y_train = y[train_index]    # 划分数据集
@@ -266,7 +267,7 @@ plt.show()
 for i in range(10):
     for train_index, test_index in kf.split(X):
         # clf = tree.DecisionTreeClassifier(max_depth=2, min_impurity_decrease=0,min_samples_split=i+2)
-        clf=SVC(C=5,kernel='rbf',gamma=0.03171,shrinking=True,probability=False,max_iter=-1)
+        clf=SVC(C=11,kernel='rbf',gamma=0.0170,shrinking=True,probability=False,max_iter=-1)
         X_train = X[train_index]
         X_test = X[test_index]
         y_train = y[train_index]    # 划分数据集
@@ -276,7 +277,7 @@ for i in range(10):
         acc = accuracy_score(y, y_pred)
     print("验证集准确率: {}".format(acc))
 
-clf=SVC(C=5,kernel='rbf',gamma=0.03171,shrinking=True,probability=False,max_iter=-1)
+clf=SVC(C=11,kernel='rbf',gamma=0.0170,shrinking=True,probability=False,max_iter=-1)
 clf.fit(train,train_lable)
 test_label=clf.predict(test)
 df = pd.DataFrame({'ID':test_ID,'CLASS':test_label})
